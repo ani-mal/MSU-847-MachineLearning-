@@ -1,9 +1,6 @@
 load data.txt
 load labels.txt
 
-epsilon = 0.1 
-maxiter = 100
-
 train = data(1:2000, :)
 trainLabels = labels(1:2000)
 
@@ -12,12 +9,20 @@ test = data(2001:4601, :)
 
 [weights, biasData] = initialize(train)
 
-sig = sigmoid( weights, biasData )
-p = probability( sig )
-lx = p.*biasData
-l = likelihood( biasData, p, trainLabels ) 
-xLx = ( biasData'*lx)
-result = xLx\l 
+ sig = sigmoid( weights, biasData )
+%  p = likelihood( sig )
+%  lx = p.*biasData
+%  l = gradient( biasData, p, trainLabels ) 
+%  h = hessian( weights, biasData)
+%  R = diag(h)
+ 
+%  result = biasData.*R
+%  rGrad = result\l
+%  
+epsilon = 0.0001 
+maxiter = 1000
+
+[weights] = logistic_tain(train, trainLabels, epsilon, maxiter)
 
 %initializing weights as zero, and adding the biad column of 1 to the data
 %points 
@@ -28,21 +33,31 @@ function [weights, biasdata] = initialize( data )
 end 
 
 %sigmoid function 
+% 1/(1 + exp(-z) 
 function sig = sigmoid( weights, data )
     [m,n] = size(data)
     wData = data*weights'
     sig = 1./(ones(m,1) + exp( -(wData) ) )
 end 
 
-%posterior probability 
-function p = probability( sig )
+%Max likelihood sigma(1- sigma)
+function p = likelihood( sig )
    [m,n] = size(sig)
     p = sig.*( ones(m,1) - sig)
 end
 
+% phi(y-t)
+function l = gradient( data,y, labels)
+    l = data'*(y - labels ) 
+end 
 
-function l = likelihood( data,p, labels) 
-    l = data'*(labels - p) 
+
+%Rnn = y_n(1-y_n) = w^t phi_n( 1 - w^t phi )
+% returns a vector ?
+function h = hessian( weights, data)
+    [m,n] = size(data)
+    wPhi =  weights*data' %yn = w^t * phi 
+    h = wPhi.*( ones(1,m) - wPhi)  
 end 
 
 function [weights] = logistic_tain(data, labels, epsilon, maxiter)
@@ -72,19 +87,30 @@ function [weights] = logistic_tain(data, labels, epsilon, maxiter)
 [weights, biasData] =  initialize( data )
 
     for i= 1:maxiter 
-        sig = sigmoid( weights, biasData )
-        p = probability( sig )
-        lX = l.*biasData
-        l =  likelihood( biasData, labels, p) 
         prevW =  weights
-        % weights <-  weights + (biasData'lX)^(-1) * l
-        weights = prevW + ( biasData'*lX)\l
         
-        if( sumsqr( weights - prevW ) <= epsilon ) %stop condition
+        sig = sigmoid( weights, biasData )
+        like = likelihood( sig )
+        grad = gradient( biasData, like, labels)
+       
+        lX = grad'.*biasData
+        prevW =  weights
+        % weights <-  weights + (biasData'lX)^(-1) * grad
+        cost = ( biasData'*lX)\grad
+        weights = prevW + cost'
+        
+        difference = weights' - prevW'
+        sumDif = sum( difference )
+        dist =  abs(sumDif/ 58)
+        
+        if( dist <= epsilon ) %stop condition
             break
         end
     end 
 end 
+
+
+
 
 
 
