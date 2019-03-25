@@ -7,18 +7,6 @@ trainLabels = labels(1:2000)
 testLabels = labels(2000:4601)
 test = data(2001:4601, :)
 
-[weights, biasData] = initialize(train)
-
- sig = sigmoid( weights, biasData )
-%  p = likelihood( sig )
-%  lx = p.*biasData
-%  l = gradient( biasData, p, trainLabels ) 
-%  h = hessian( weights, biasData)
-%  R = diag(h)
- 
-%  result = biasData.*R
-%  rGrad = result\l
-%  
 epsilon = 0.0001 
 maxiter = 1000
 
@@ -84,8 +72,8 @@ function [weights] = logistic_tain(data, labels, epsilon, maxiter)
 %then the output is transformed into using a logistic functon
 % p(class=0) = 1 / (1 + e^(-output))
 
-[weights, biasData] =  initialize( data )
-
+    [weights, biasData] =  initialize( data )
+    iter = 0 
     for i= 1:maxiter 
         prevW =  weights
         
@@ -103,13 +91,33 @@ function [weights] = logistic_tain(data, labels, epsilon, maxiter)
         sumDif = sum( difference )
         dist =  abs(sumDif/ 58)
         
+        
         if( dist <= epsilon ) %stop condition
+            
             break
         end
     end 
 end 
 
 
+function [accuracy] = predict( weights, test, expected )
+    [m,n] = size(test)
+    prediction = zeros(1, n)
+    
+    testBias = [ ones(m,1) test]
+    correct = 0
+    for i = 1:n 
+        result = sum(weights'.*testBias(i, :))
+        if( result > 0.5 )
+            prediction(i) = 1 
+            if( prediction(i) == expected(i) )
+                correct = correct + 1 
+            end
+        end
+    end 
+    
+    accuracy = (correct/m) * 100
+end 
 
 
 
