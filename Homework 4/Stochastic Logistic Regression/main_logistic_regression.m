@@ -16,6 +16,10 @@ epsilon = 1e-5
 maxiter = 1000
 
 
+for i = 1:6 
+   weights = logistic_tain(data(1:sampleSize(i),:), labels(1:sampleSize(i)), epsilon, maxiter);
+   acc(i) = performance( test_x, test_y, weights )
+end
 
 function [weights] = logistic_tain(data, labels, epsilon, maxiter)
     %
