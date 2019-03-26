@@ -21,6 +21,9 @@ for i = 1:6
    acc(i) = performance( test_x, test_y, weights )
 end
 
+plot(sampleSize, acc )
+
+
 function [weights] = logistic_tain(data, labels, epsilon, maxiter)
     %
 % code to train a logistic regression classifier
