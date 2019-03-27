@@ -22,6 +22,8 @@ for i = 1:6
 end
 
 plot(sampleSize, acc )
+xlabel('Training Sample Size ');
+ylabel('Accuracy from 0 - 1');
 grid on 
 function [weights] = logistic_tain(data, labels, epsilon, maxiter)
     %
@@ -45,7 +47,7 @@ function [weights] = logistic_tain(data, labels, epsilon, maxiter)
 %   weights = (d+1) * 1 vector of weights weightshere the weights correspond to
 %             the columns of "data"
 
-    learning_rate = 1;
+    learning_rate = 0.00001;
     [m_samples, n_features] = size(data) 
     
     weights = zeros(n_features,1);
