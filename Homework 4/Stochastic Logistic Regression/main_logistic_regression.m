@@ -22,8 +22,7 @@ for i = 1:6
 end
 
 plot(sampleSize, acc )
-
-
+grid on 
 function [weights] = logistic_tain(data, labels, epsilon, maxiter)
     %
 % code to train a logistic regression classifier
@@ -46,7 +45,7 @@ function [weights] = logistic_tain(data, labels, epsilon, maxiter)
 %   weights = (d+1) * 1 vector of weights weightshere the weights correspond to
 %             the columns of "data"
 
-    learning_rate = 0.0005;
+    learning_rate = 1;
     [m_samples, n_features] = size(data) 
     
     weights = zeros(n_features,1);
