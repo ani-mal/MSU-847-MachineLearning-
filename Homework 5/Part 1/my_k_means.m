@@ -17,12 +17,6 @@ function [clusters_index] = my_k_means(data, K)
     m = size(final, 1) 
 
     clusters_index =  cluster_number;
-
-   % gscatter(final(:,1),final(:,2),final(:,3))
-%     plot(centroids(1,1), centroids(1,2), 'k.','MarkerSize',20)
-%     plot(centroids(2,1), centroids(2,2), 'k.','MarkerSize',20)
-%     plot(centroids(3,1), centroids(3,2), 'k.','MarkerSize',20)
-%     plot(centroids(4,1), centroids(4,2), 'k.','MarkerSize',20)
 end 
 
 function centroids = initialize_centroids(data, K)
